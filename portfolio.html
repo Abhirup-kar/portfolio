@@ -44,6 +44,25 @@
     z-index: 0;
   }
 
+  /* ── SCROLL PROGRESS ── */
+  #scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--teal));
+    z-index: 200;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px rgba(109,97,246,0.6);
+  }
+
+  ::selection { background: rgba(109,97,246,0.35); color: #fff; }
+
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 6px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: #2a2a30; }
+
   /* ── NAV ── */
   nav {
     position: fixed;
@@ -105,8 +124,12 @@
     pointer-events: none;
     z-index: 0;
   }
-  .blob-1 { width: 500px; height: 500px; background: rgba(109,97,246,0.15); top: -10%; left: -10%; }
-  .blob-2 { width: 350px; height: 350px; background: rgba(45,212,191,0.1); bottom: 10%; right: 5%; }
+  .blob-1 { width: 500px; height: 500px; background: rgba(109,97,246,0.15); top: -10%; left: -10%; animation: float1 14s ease-in-out infinite; }
+  .blob-2 { width: 350px; height: 350px; background: rgba(45,212,191,0.1); bottom: 10%; right: 5%; animation: float2 16s ease-in-out infinite; }
+  .blob-3 { width: 280px; height: 280px; background: rgba(251,191,36,0.08); top: 40%; left: 45%; animation: float3 18s ease-in-out infinite; }
+  @keyframes float1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(40px,30px) scale(1.08); } }
+  @keyframes float2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-30px,-25px) scale(1.05); } }
+  @keyframes float3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-20px,35px) scale(0.9); } }
 
   .hero-inner {
     position: relative;
@@ -155,6 +178,7 @@
 
   .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 3rem; }
   .btn-primary {
+    position: relative;
     display: inline-flex; align-items: center; gap: 8px;
     padding: 10px 22px;
     background: var(--accent);
@@ -162,9 +186,20 @@
     border-radius: 8px;
     text-decoration: none;
     font-size: 14px; font-weight: 500;
-    transition: transform 0.15s, opacity 0.15s;
+    transition: transform 0.15s, opacity 0.15s, box-shadow 0.2s;
+    overflow: hidden;
   }
-  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -75%;
+    width: 50%; height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform: skewX(-20deg);
+    transition: left 0.6s ease;
+  }
+  .btn-primary:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(109,97,246,0.35); }
+  .btn-primary:hover::after { left: 125%; }
   .btn-ghost {
     display: inline-flex; align-items: center; gap: 8px;
     padding: 10px 22px;
@@ -276,8 +311,14 @@
     opacity: 0;
     transition: opacity 0.2s;
   }
-  .project-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+  .project-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px -12px rgba(109,97,246,0.25), 0 0 0 1px rgba(255,255,255,0.03);
+  }
   .project-card:hover::before { opacity: 1; }
+  .project-icon { transition: transform 0.3s ease; }
+  .project-card:hover .project-icon { transform: scale(1.08) rotate(-4deg); }
 
   .project-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
   .project-icon {
@@ -381,7 +422,10 @@
     background: rgba(255,255,255,0.05);
     border: 1px solid rgba(255,255,255,0.08);
     color: #a1a1aa;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
+  .cp-platform:hover { color: var(--text); border-color: var(--border-hover); background: rgba(255,255,255,0.08); }
 
   /* ── CERTIFICATIONS ── */
   .cert-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; }
@@ -449,6 +493,8 @@
 </head>
 <body>
 
+<div id="scroll-progress"></div>
+
 <!-- NAV -->
 <nav>
   <a href="#hero" class="nav-logo">ak.</a>
@@ -465,6 +511,7 @@
 <section id="hero">
   <div class="blob blob-1"></div>
   <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
   <div class="hero-inner">
     <div class="hero-tag">Available for internships</div>
     <h1>
@@ -490,11 +537,11 @@
         <div class="stat-label">Problems solved</div>
       </div>
       <div class="stat">
-        <div class="stat-num">8.5</div>
+        <div class="stat-num">8.4</div>
         <div class="stat-label">CGPA at JU</div>
       </div>
       <div class="stat">
-        <div class="stat-num">3</div>
+        <div class="stat-num">4</div>
         <div class="stat-label">Production projects</div>
       </div>
     </div>
@@ -628,17 +675,13 @@
       <div class="project-header">
         <div class="project-icon" style="background:rgba(45,212,191,0.12); border:1px solid rgba(45,212,191,0.2);">📊</div>
         <div class="project-links">
-          <a href="https://github.com/Abhirup-kar" target="_blank" rel="noopener" class="project-link">
+          <a href="https://github.com/Abhirup-kar/ReviewGithubProfile" target="_blank" rel="noopener" class="project-link">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33c.85 0 1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 2.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
             Code
           </a>
-          <a href="#" class="project-link" target="_blank" rel="noopener">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Live
-          </a>
         </div>
       </div>
-      <p class="project-name">GitHub Profile Review & Battle</p>
+      <p class="project-name">GitHub Profile Review &amp; Battle</p>
       <p class="project-desc">Single-page app consuming the GitHub REST API to visualize developer profile metrics. Side-by-side comparisons via Chart.js with async JSON handling — all vanilla JavaScript, no frameworks.</p>
       <div class="project-tech">
         <span class="tech-pill">HTML</span>
@@ -646,6 +689,26 @@
         <span class="tech-pill">JavaScript</span>
         <span class="tech-pill">Chart.js</span>
         <span class="tech-pill">GitHub API</span>
+      </div>
+    </div>
+
+    <!-- Project 4 -->
+    <div class="project-card">
+      <div class="project-header">
+        <div class="project-icon" style="background:rgba(74,222,128,0.12); border:1px solid rgba(74,222,128,0.2);">🧮</div>
+        <div class="project-links">
+          <a href="https://github.com/Abhirup-kar/Calculator" target="_blank" rel="noopener" class="project-link">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33c.85 0 1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 2.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            Code
+          </a>
+        </div>
+      </div>
+      <p class="project-name">Python Calculator</p>
+      <p class="project-desc">A desktop calculator built in Python with a custom CSS-inspired UI layer, covering core arithmetic operations with a clean, minimal interface.</p>
+      <div class="project-tech">
+        <span class="tech-pill">Python</span>
+        <span class="tech-pill">Tkinter</span>
+        <span class="tech-pill">CSS</span>
       </div>
     </div>
 
@@ -665,9 +728,9 @@
         <p class="edu-name">Jadavpur University</p>
         <p class="edu-sub">B.E. in Computer Science & Engineering · Kolkata, India</p>
         <div class="edu-badges">
-          <span class="edu-badge badge-gpa">CGPA 8.5</span>
+          <span class="edu-badge badge-gpa">CGPA 8.4</span>
           <span class="edu-badge badge-year">Expected May 2028</span>
-          <span class="edu-badge" style="background:rgba(167,139,250,0.12); color:#c4b5fd; border:1px solid rgba(167,139,250,0.25);">2nd Year</span>
+          <span class="edu-badge" style="background:rgba(167,139,250,0.12); color:#c4b5fd; border:1px solid rgba(167,139,250,0.25);">3rd Year</span>
         </div>
       </div>
     </div>
@@ -686,10 +749,9 @@
         <div class="cp-num">800+</div>
         <div class="cp-label">Problems solved across platforms</div>
         <div class="cp-platforms">
-          <span class="cp-platform">LeetCode</span>
-          <span class="cp-platform">Codeforces</span>
-          <span class="cp-platform">GeeksForGeeks</span>
-          <span class="cp-platform">Codolio</span>
+          <a href="https://leetcode.com/u/clashroyal/" target="_blank" rel="noopener" class="cp-platform">LeetCode</a>
+          <a href="https://www.geeksforgeeks.org/profile/karabhio2uy" target="_blank" rel="noopener" class="cp-platform">GeeksForGeeks</a>
+          <a href="https://codolio.com/profile/Abhirup%20Kar" target="_blank" rel="noopener" class="cp-platform">Codolio</a>
         </div>
       </div>
     </div>
@@ -770,7 +832,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <p>© 2025 Abhirup Kar · Built with care</p>
+  <p>© 2026 Abhirup Kar · Built with care</p>
   <p>CS student @ <a href="https://jadavpuruniversity.in" target="_blank" rel="noopener">Jadavpur University</a></p>
 </footer>
 
@@ -785,6 +847,16 @@
     });
   }, { threshold: 0.1 });
   reveals.forEach(r => obs.observe(r));
+
+  const progressBar = document.getElementById('scroll-progress');
+  function updateProgress() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
 </script>
 </body>
 </html>
